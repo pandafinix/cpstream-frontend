@@ -11,7 +11,7 @@ This repository contains the **Next.js frontend** for CPStream. It connects with
 * Live streaming with LiveKit
 * OBS support through RTMP ingress
 * Streamer dashboard for managing stream details
-* Generate connection flow for OBS `serverUrl` and `streamKey`
+* Generate connection flow for OBS streaming credentials
 * Public home page showing live streams first
 * Stream watch page with video player and chat
 * Live badge and live status updates using LiveKit webhooks
@@ -22,7 +22,7 @@ This repository contains the **Next.js frontend** for CPStream. It connects with
   * Difficulty
   * Programming language
 * Chat system for stream viewers
-* Redis-backed chat spam/rate limiting
+* Redis-backed chat spam/rate limiting through the backend
 * Chat settings:
 
   * Enable/disable chat
@@ -95,7 +95,7 @@ The frontend communicates with the backend for:
 2. Streamer opens the creator dashboard.
 3. Streamer generates a LiveKit connection.
 4. Backend creates an RTMP ingress using LiveKit.
-5. Streamer copies the generated `serverUrl` and `streamKey` into OBS.
+5. Streamer copies the generated OBS credentials into OBS.
 6. OBS sends the stream to LiveKit.
 7. LiveKit sends webhook events to the backend.
 8. Backend updates the stream live status.
@@ -145,13 +145,7 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
 NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 
-DATABASE_URL=
-
-LIVEKIT_API_URL=
-LIVEKIT_API_KEY=
-LIVEKIT_API_SECRET=
 NEXT_PUBLIC_LIVEKIT_WS_URL=
-
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
 
 UPLOADTHING_SECRET=
@@ -159,6 +153,8 @@ UPLOADTHING_APP_ID=
 ```
 
 Do not commit real environment variables. Keep secrets only in `.env`.
+
+LiveKit API keys, LiveKit API secrets, database credentials, PostgreSQL configuration, and Redis configuration are handled by the Spring Boot backend, not by the frontend.
 
 ---
 
