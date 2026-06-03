@@ -16,8 +16,9 @@ export function ConnectModal({ username }: { username: string }) {
           toast.success("Connection generated successfully");
           window.location.reload();
         })
-        .catch(() => {
-          toast.error("Failed to generate connection");
+        .catch((error) => {
+          console.error("CREATE INGRESS ERROR:", error);
+          toast.error(error?.message || "Failed to generate connection");
         });
     });
   };

@@ -1,3 +1,5 @@
+import { getSelf } from "@/lib/auth-service";
+
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
@@ -19,7 +21,20 @@ const mapStream = (stream: any) => {
 };
 
 export const getStreams = async () => {
-  const res = await fetch(`${BACKEND_URL}/api/streams/live`, {
+  let viewerId = "";
+
+  try {
+    const self = await getSelf();
+    viewerId = self.id;
+  } catch {
+    viewerId = "";
+  }
+
+  const url = viewerId
+    ? `${BACKEND_URL}/api/streams/live?viewerId=${viewerId}`
+    : `${BACKEND_URL}/api/streams/live`;
+
+  const res = await fetch(url, {
     cache: "no-store",
   });
 

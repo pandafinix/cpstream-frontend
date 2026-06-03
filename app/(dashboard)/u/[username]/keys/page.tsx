@@ -7,12 +7,42 @@ import { KeyCard } from "./_components/key-card";
 import { ConnectModal } from "./_components/connect-modal";
 import { StreamInfoForm } from "./_components/stream-info-form";
 
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
+
+type StreamKeys = {
+  id: string;
+  ingressId: string | null;
+  serverUrl: string | null;
+  streamKey: string | null;
+  username: string;
+};
+
+const getStreamKeysByUsername = async (
+  username: string
+): Promise<StreamKeys | null> => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/streams/user/${username}/keys`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      return null;
+    }
+
+    return await res.json();
+  } catch {
+    return null;
+  }
+};
+
 export default async function KeysPage({
   params,
 }: {
   params: { username: string };
 }) {
   const stream = await getStreamByUsername(params.username);
+  const streamKeys = await getStreamKeysByUsername(params.username);
 
   if (!stream) {
     throw new Error("No stream found");
@@ -47,13 +77,13 @@ export default async function KeysPage({
           <div className="flex items-center gap-x-10">
             <p className="font-semibold shrink-0">Ingress ID</p>
             <p className="font-mono text-sm break-all">
-              {stream.ingressId || "Not created"}
+              {streamKeys?.ingressId || "Not created"}
             </p>
           </div>
         </div>
 
-        <URLCard value={stream.serverUrl || ""} />
-        <KeyCard value={stream.streamKey || ""} />
+        <URLCard value={streamKeys?.serverUrl || ""} />
+        <KeyCard value={streamKeys?.streamKey || ""} />
       </div>
     </div>
   );

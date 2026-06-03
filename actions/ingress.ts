@@ -17,11 +17,13 @@ export const createIngress = async (username: string) => {
     cache: "no-store",
   });
 
+  const text = await res.text();
+
   if (!res.ok) {
-    throw new Error("Failed to create ingress");
+    throw new Error(text || "Failed to create ingress");
   }
 
-  const data = await res.json();
+  const data = text ? JSON.parse(text) : null;
 
   revalidatePath(`/u/${username}/keys`);
 
