@@ -20,9 +20,7 @@ export function Actions({
   const handleFollow = () => {
     startTransition(() => {
       onFollow(userId)
-        .then((data) =>
-          toast.success(`You are now following ${data.following.username}`)
-        )
+        .then(() => toast.success("You are now following this user"))
         .catch(() => toast.error("Something went wrong, failed to follow"));
     });
   };
@@ -30,21 +28,15 @@ export function Actions({
   const handleUnfollow = () => {
     startTransition(() => {
       onUnfollow(userId)
-        .then((data) =>
-          toast.success(`You have unfollowed ${data.following.username}`)
-        )
-        .catch(() => toast.error("Something went wrong, failed to follow"));
+        .then(() => toast.success("You have unfollowed this user"))
+        .catch(() => toast.error("Something went wrong, failed to unfollow"));
     });
   };
 
   const handleBlock = () => {
     startTransition(() => {
       onBlock(userId)
-        .then((data) =>
-          !!data
-            ? toast.success(`You have blocked ${data?.blocked.username}`)
-            : toast.success("Blocked guest")
-        )
+        .then(() => toast.success("You have blocked this user"))
         .catch(() => toast.error("Something went wrong, failed to block"));
     });
   };
@@ -52,9 +44,7 @@ export function Actions({
   const handleUnblock = () => {
     startTransition(() => {
       onUnblock(userId)
-        .then((data) =>
-          toast.success(`You have unblocked ${data.blocked.username}`)
-        )
+        .then(() => toast.success("You have unblocked this user"))
         .catch(() => toast.error("Something went wrong, failed to unblock"));
     });
   };
@@ -76,7 +66,7 @@ export function Actions({
         Block
       </Button>
       <Button onClick={handleUnblock} disabled={isPending}>
-        UnBlock
+        Unblock
       </Button>
     </>
   );
