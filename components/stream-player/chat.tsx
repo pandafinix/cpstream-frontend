@@ -98,17 +98,24 @@ export function Chat({
     fetchMessages();
   }, [hostName]);
 
-  const liveMessages = useMemo(() => {
-    return messages.map((msg) => ({
-      id: `${msg.timestamp}-${msg.from?.identity}-${msg.message}`,
+ const liveMessages = useMemo(() => {
+  return messages.map((msg) => {
+    const identity = msg.from?.identity || null;
+
+    return {
+      id: `${msg.timestamp}-${identity}-${msg.message}`,
       message: msg.message,
       timestamp: msg.timestamp,
       from: {
-        name: msg.from?.name,
-        identity: msg.from?.identity,
+        name:
+          identity === viewerIdentity
+            ? viewerName
+            : msg.from?.name || "Guest",
+        identity,
       },
-    }));
-  }, [messages]);
+    };
+  });
+}, [messages, viewerIdentity, viewerName]);
 
   const allMessages = useMemo(() => {
     return [...oldMessages, ...liveMessages].sort(
