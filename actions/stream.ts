@@ -3,30 +3,48 @@
 import { revalidatePath } from "next/cache";
 
 import { getSelf } from "@/lib/auth-service";
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import {
   getStreamByUsername,
   updateStreamById,
   StreamUpdateValues,
 } from "@/lib/stream-service";
 
-export const updateStream = async (values: StreamUpdateValues) => {
+export const updateStream = async (
+  values: StreamUpdateValues
+) => {
   try {
     const self = await getSelf();
+    const authHeaders =
+      await getBackendAuthHeaders();
 
-    const selfStream = await getStreamByUsername(self.username);
+    const selfStream =
+      await getStreamByUsername(self.username);
 
     if (!selfStream) {
       throw new Error("No stream found");
     }
 
-    const stream = await updateStreamById(selfStream.id, values);
+    const stream = await updateStreamById(
+      selfStream.id,
+      values,
+      authHeaders
+    );
 
     revalidatePath("/");
     revalidatePath("/search");
-    revalidatePath(`/u/${self.username}/keys`);
-    revalidatePath(`/u/${self.username}/chat`);
-    revalidatePath(`/u/${self.username}`);
-    revalidatePath(`/${self.username}`);
+    revalidatePath(
+      `/u/${self.username}/keys`
+    );
+    revalidatePath(
+      `/u/${self.username}/chat`
+    );
+    revalidatePath(
+      `/u/${self.username}`
+    );
+    revalidatePath(
+      `/${self.username}`
+    );
 
     return stream;
   } catch (error) {
