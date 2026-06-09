@@ -2,14 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getBackendAuthHeaders } from "@/lib/backend-auth";
+
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
 
 export const createIngress = async (username: string) => {
+  const authHeaders = await getBackendAuthHeaders();
+
   const res = await fetch(`${BACKEND_URL}/api/livekit/ingress`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...authHeaders,
     },
     body: JSON.stringify({
       username,
