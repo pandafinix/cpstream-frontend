@@ -1,5 +1,6 @@
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
+  import { auth } from "@clerk/nextjs";
 
 export type CpstreamStream = {
   id: string;
