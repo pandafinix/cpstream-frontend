@@ -125,31 +125,30 @@ export const getStreamKeysByUsername = async (
 
 export const updateStreamById = async (
   streamId: string,
-  values: StreamUpdateValues,
-  authHeaders: Record<string, string>
-): Promise<CpstreamStream | null> => {
-  const res = await fetch(
-    `${BACKEND_URL}/api/streams/${streamId}`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        ...authHeaders,
-      },
-      cache: "no-store",
-      body: JSON.stringify(values),
-    }
-  );
+  values: StreamUpdateValues
+) => {
+  const { getToken } = auth();
+  const token = await getToken();
+
+  if (!token) {
+    throw new Error("Unauthorized");
+  }
+
+  const res = await fetch(`${BACKEND_URL}/api/streams/${streamId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify(values),
+  });
 
   const text = await res.text();
 
   if (!res.ok) {
-    throw new Error(
-      text || "Failed to update stream"
-    );
+    throw new Error(text || `Failed to update stream (${res.status})`);
   }
 
-  const stream = text ? JSON.parse(text) : null;
-
-  return mapStream(stream);
+  return mapStream(text ? JSON.parse(text) : null);
 };
