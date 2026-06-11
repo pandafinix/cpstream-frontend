@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 
 import { getSelf } from "@/lib/auth-service";
-import { getBackendAuthHeaders } from "@/lib/backend-auth";
 import {
   getStreamByUsername,
   updateStreamById,
@@ -15,8 +14,6 @@ export const updateStream = async (
 ) => {
   try {
     const self = await getSelf();
-    const authHeaders =
-      await getBackendAuthHeaders();
 
     const selfStream =
       await getStreamByUsername(self.username);
@@ -27,24 +24,15 @@ export const updateStream = async (
 
     const stream = await updateStreamById(
       selfStream.id,
-      values,
-      authHeaders
+      values
     );
 
     revalidatePath("/");
     revalidatePath("/search");
-    revalidatePath(
-      `/u/${self.username}/keys`
-    );
-    revalidatePath(
-      `/u/${self.username}/chat`
-    );
-    revalidatePath(
-      `/u/${self.username}`
-    );
-    revalidatePath(
-      `/${self.username}`
-    );
+    revalidatePath(`/u/${self.username}/keys`);
+    revalidatePath(`/u/${self.username}/chat`);
+    revalidatePath(`/u/${self.username}`);
+    revalidatePath(`/${self.username}`);
 
     return stream;
   } catch (error) {
